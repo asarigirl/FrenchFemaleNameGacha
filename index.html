@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>French Female Name Gacha - フランス女性名ガチャ＆辞書</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Noto+Sans+JP:wght@300;400&display=swap');
-
         :root {
             --primary-blue: #0055A4;
             --primary-red: #EF4135;
@@ -20,7 +21,7 @@
         }
 
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             background-color: var(--light-gray);
             color: var(--dark-gray);
             display: flex;
@@ -28,30 +29,29 @@
             align-items: flex-start;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             box-sizing: border-box;
         }
 
         .container {
             background-color: #ffffff;
-            padding: 30px 40px;
+            padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             max-width: 700px;
             width: 100%;
             border-top: 5px solid var(--primary-blue);
         }
 
-        /* --- タブナビゲーション --- */
         .app-nav {
             display: flex;
             border-bottom: 1px solid #dee2e6;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         .app-nav button {
-            font-family: 'Noto Sans JP', sans-serif;
-            font-size: 1rem;
-            padding: 10px 20px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-size: 0.9rem;
+            padding: 8px 16px;
             border: none;
             background-color: transparent;
             cursor: pointer;
@@ -69,31 +69,30 @@
             font-weight: bold;
         }
 
-        /* --- ページコンテンツ --- */
-        .page {
-            display: none;
-        }
-        .page.active {
-            display: block;
-        }
+        .page { display: none; }
+        .page.active { display: block; }
 
-        /* --- ガチャページ --- */
         #gacha-page { text-align: center; }
         #gacha-page h1 {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-weight: 700;
             color: var(--primary-blue);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 1.8rem;
+            margin: 10px 0 5px 0;
         }
         #gacha-page .subtitle {
             font-size: 1rem;
             color: var(--medium-gray);
-            margin-bottom: 30px;
+            margin: 0 0 5px 0;
         }
+        #gacha-page p {
+            margin: 0 0 15px 0;
+        }
+
         #result-box {
-            min-height: 160px;
-            margin-bottom: 30px;
-            padding: 20px;
+            min-height: 120px;
+            margin-bottom: 20px;
+            padding: 15px;
             border-radius: 8px;
             background-color: var(--light-gray);
             border: 1px solid #dee2e6;
@@ -101,36 +100,48 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            line-height: 1.5;
         }
-        #katakana-name { font-size: 1.8rem; font-weight: bold; }
-        #french-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--medium-gray); font-style: italic; }
-        #meaning { font-size: 1rem; color: var(--dark-gray); margin-top: 15px; line-height: 1.6; }
+        #katakana-name { font-size: 1.5rem; font-weight: bold; margin: 0;}
+        #french-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--medium-gray); font-style: italic; margin: 5px 0; }
+        #meaning { font-size: 0.9rem; color: var(--dark-gray); margin: 10px 0 0 0; }
         #initial-message { color: var(--medium-gray); }
+        
         #gacha-button {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             background-color: var(--primary-red);
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 12px 24px;
+            font-size: 1.1rem;
             border-radius: 50px;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.1s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
         #gacha-button:hover { background-color: #D32F2F; }
         #gacha-button:active { transform: scale(0.98); }
 
-        /* --- 辞書ページ --- */
+        #random-image {
+            width: 30%;
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         #index-nav {
             position: sticky;
             top: 0;
             background-color: rgba(255, 255, 255, 0.98);
-            padding: 10px 0;
+            padding: 8px 0;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 5px;
+            gap: 4px;
             z-index: 10;
             border-bottom: 1px solid #dee2e6;
         }
@@ -138,38 +149,46 @@
             text-decoration: none;
             color: var(--primary-blue);
             font-weight: bold;
-            padding: 5px 8px;
+            padding: 4px 6px;
             border-radius: 4px;
             transition: background-color 0.2s, color 0.2s;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
         #index-nav a:hover {
             background-color: var(--primary-blue);
             color: white;
         }
-        #name-list {
-            margin-top: 20px;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
+        #name-list { margin-top: 15px; max-height: 60vh; overflow-y: auto; }
         .name-section h2 {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             color: var(--primary-blue);
-            padding-top: 20px;
+            padding-top: 15px;
             margin-top: -10px;
             border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
+            padding-bottom: 4px;
+            font-size: 1.2rem;
         }
-        .name-entry {
-            padding: 12px 5px;
-            border-bottom: 1px solid #f2f2f2;
-        }
+        .name-entry { padding: 10px 5px; border-bottom: 1px solid #f2f2f2; line-height: 1.4;}
         .name-main { margin: 0; }
-        .name-katakana { font-weight: bold; font-size: 1.1rem; }
-        .name-french { font-family: 'Cormorant Garamond', serif; color: var(--medium-gray); font-style: italic; margin-left: 8px; }
-        .name-meaning { font-size: 0.9rem; color: var(--dark-gray); margin-top: 6px; margin-bottom: 0; }
+        .name-katakana { font-weight: bold; font-size: 1rem; }
+        .name-french { font-family: 'Cormorant Garamond', serif; color: var(--medium-gray); font-style: italic; margin-left: 8px; font-size: 0.9rem; }
+        .name-meaning { font-size: 0.85rem; color: var(--dark-gray); margin-top: 4px; margin-bottom: 0; }
 
-        footer { margin-top: 30px; font-size: 0.8rem; color: #aaa; text-align: center; }
+        footer { margin-top: 20px; font-size: 0.75rem; color: #aaa; text-align: center; }
+
+        /* --- スマホ向けスタイル --- */
+        @media (max-width: 600px) {
+            body { padding: 5px; }
+            .container { padding: 15px; }
+            #gacha-page h1 { font-size: 1.5rem; }
+            #gacha-page .subtitle { font-size: 0.9rem; }
+            #gacha-page p { margin-bottom: 10px; }
+            #katakana-name { font-size: 1.3rem; }
+            #french-name { font-size: 1.1rem; }
+            #meaning { font-size: 0.8rem; }
+            #gacha-button { padding: 10px 20px; font-size: 1rem; }
+            #random-image { width: 100%; }
+        }
     </style>
 </head>
 <body>
