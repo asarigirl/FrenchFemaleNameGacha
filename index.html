@@ -182,15 +182,18 @@
 
         <!-- ガチャページ -->
         <div id="gacha-page" class="page active">
-            <h1>Mon Prénom Français</h1>
-            <p class="subtitle">素敵なフランスの女性名との出会い</p>
+            <h1>Prénom féminin français Gacha</h1>
+            <p class="subtitle">French Female Name Gacha</p>
+            <p>フランス女性名ガチャ</p>
+            <p id="name-count"></p>
             <div id="result-box">
+                <img id="random-image" src="" alt="Random Image" style="max-width: 100%; border-radius: 8px; margin-bottom: 15px; display: none;">
                  <p id="initial-message">下のボタンを押して、名前を見つけてみましょう</p>
                  <p id="katakana-name"></p>
                  <p id="french-name"></p>
                  <p id="meaning"></p>
             </div>
-            <button id="gacha-button">名前を見つける</button>
+            <button id="gacha-button">ガチャる</button>
         </div>
 
         <!-- 辞書ページ -->
@@ -200,11 +203,101 @@
         </div>
         
         <footer>
-            <p>&copy; 2025 Mon Prénom Français</p>
+            <p>&copy; 2025 ふつうのアサリガール</p>
         </footer>
     </div>
 
     <script>
+        const images = [
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0001.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0002.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0003.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0004.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0005.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0006.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0007.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0008.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0009.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0010.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0011.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0012.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0013.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0014.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0015.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0016.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0017.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0018.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0019.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0020.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0021.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0022.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0023.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0024.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0025.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0026.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0027.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0028.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0029.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0030.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0031.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0032.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0033.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0034.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0035.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0036.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0037.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0038.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0039.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0040.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0041.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0042.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0043.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0044.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0045.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0046.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0047.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0048.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0049.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0050.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0051.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0052.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0053.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0054.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0055.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0056.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0057.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0058.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0059.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0060.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0061.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0063.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0064.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0065.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0066.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0067.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0068.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0069.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0070.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0071.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0072.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0073.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0074.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0075.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0076.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0077.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0078.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0079.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0080.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0081.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0082.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0083.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0084.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0085.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0086.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0087.png",
+            "https://raw.githubusercontent.com/gurikohamaguri/assets/main/images/0088.png"
+        ];
+
         const names = [
             { katakana: 'アベリア', french: 'Abelia', meaning: '' },
             { katakana: 'アベイユ', french: 'Abeille', meaning: 'フランス語で「ミツバチ」を意味します。' },
@@ -662,10 +755,22 @@
             const tabDictionary = document.getElementById('tab-dictionary');
             const pageGacha = document.getElementById('gacha-page');
             const pageDictionary = document.getElementById('dictionary-page');
+            const nameCountEl = document.getElementById('name-count');
             
+            nameCountEl.textContent = `全${names.length}件`;
+
             setupTabs();
             setupGacha();
             buildDictionary();
+            displayRandomImage();
+
+            function displayRandomImage() {
+                const randomIndex = Math.floor(Math.random() * images.length);
+                const randomImageUrl = images[randomIndex];
+                const imageElement = document.getElementById('random-image');
+                imageElement.src = randomImageUrl;
+                imageElement.style.display = 'block';
+            }
 
             function setupTabs() {
                 tabGacha.addEventListener('click', () => switchTab(tabGacha, pageGacha));
@@ -695,6 +800,7 @@
                     katakanaNameEl.textContent = selectedName.katakana;
                     frenchNameEl.textContent = selectedName.french;
                     meaningEl.textContent = selectedName.meaning || '';
+                    displayRandomImage();
                 });
             }
 
