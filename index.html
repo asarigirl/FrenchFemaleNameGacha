@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French Female Name Gacha - フランス女性名ガチャ＆辞書</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Noto+Sans+JP:wght@300;400&display=swap');
+
+        :root {
+            --primary-blue: #0055A4;
+            --primary-red: #EF4135;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+            --medium-gray: #6c757d;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+            border-top: 5px solid var(--primary-blue);
+        }
+
+        /* --- タブナビゲーション --- */
+        .app-nav {
+            display: flex;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 30px;
+        }
+        .app-nav button {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            color: var(--medium-gray);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .app-nav button:hover {
+            color: var(--dark-gray);
+        }
+        .app-nav button.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+            font-weight: bold;
+        }
+
+        /* --- ページコンテンツ --- */
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+
+        /* --- ガチャページ --- */
+        #gacha-page { text-align: center; }
+        #gacha-page h1 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        #gacha-page .subtitle {
+            font-size: 1rem;
+            color: var(--medium-gray);
+            margin-bottom: 30px;
+        }
+        #result-box {
+            min-height: 160px;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: var(--light-gray);
+            border: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #katakana-name { font-size: 1.8rem; font-weight: bold; }
+        #french-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--medium-gray); font-style: italic; }
+        #meaning { font-size: 1rem; color: var(--dark-gray); margin-top: 15px; line-height: 1.6; }
+        #initial-message { color: var(--medium-gray); }
+        #gacha-button {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #gacha-button:hover { background-color: #D32F2F; }
+        #gacha-button:active { transform: scale(0.98); }
+
+        /* --- 辞書ページ --- */
+        #index-nav {
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            z-index: 10;
+            border-bottom: 1px solid #dee2e6;
+        }
+        #index-nav a {
+            text-decoration: none;
+            color: var(--primary-blue);
+            font-weight: bold;
+            padding: 5px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+            font-size: 0.9rem;
+        }
+        #index-nav a:hover {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        #name-list {
+            margin-top: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .name-section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--primary-blue);
+            padding-top: 20px;
+            margin-top: -10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .name-entry {
+            padding: 12px 5px;
+            border-bottom: 1px solid #f2f2f2;
+        }
+        .name-main { margin: 0; }
+        .name-katakana { font-weight: bold; font-size: 1.1rem; }
+        .name-french { font-family: 'Cormorant Garamond', serif; color: var(--medium-gray); font-style: italic; margin-left: 8px; }
+        .name-meaning { font-size: 0.9rem; color: var(--dark-gray); margin-top: 6px; margin-bottom: 0; }
+
+        footer { margin-top: 30px; font-size: 0.8rem; color: #aaa; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav class="app-nav">
+          <button id="tab-gacha" class="active">ガチャ</button>
+          <button id="tab-dictionary">辞書</button>
+        </nav>
+
+        <!-- ガチャページ -->
+        <div id="gacha-page" class="page active">
+            <h1>Mon Prénom Français</h1>
+            <p class="subtitle">素敵なフランスの女性名との出会い</p>
+            <div id="result-box">
+                 <p id="initial-message">下のボタンを押して、名前を見つけてみましょう</p>
+                 <p id="katakana-name"></p>
+                 <p id="french-name"></p>
+                 <p id="meaning"></p>
+            </div>
+            <button id="gacha-button">名前を見つける</button>
+        </div>
+
+        <!-- 辞書ページ -->
+        <div id="dictionary-page" class="page">
+            <div id="index-nav"></div>
+            <div id="name-list"></div>
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 Mon Prénom Français</p>
+        </footer>
+    </div>
+
+    <script>
+        const names = [
+            { katakana: 'アベリア', french: 'Abelia', meaning: '' },
+            { katakana: 'アベイユ', french: 'Abeille', meaning: 'フランス語で「ミツバチ」を意味します。' },
+            { katakana: 'アビゲール', french: 'Abigaëlle / Abigail', meaning: 'ヘブライ語で「私の父は喜ぶ」を意味します。' },
+            { katakana: 'アスリーヌ', french: 'Acéline', meaning: '' },
+            { katakana: 'アダ', french: 'Ada', meaning: 'ゲルマン語で「高貴な」を意味するアデライードなどの短縮形です。' },
+            { katakana: 'アデライド', french: 'Adélaïde', meaning: 'ゲルマン語で「高貴な身分」を意味します。' },
+            { katakana: 'アデール', french: 'Adèle', meaning: 'ゲルマン語で「高貴な」を意味します。' },
+            { katakana: 'アデリー', french: 'Adélie', meaning: 'アデールの派生形です。' },
+            { katakana: 'アドリーヌ', french: 'Adeline', meaning: 'アデルから派生した名前で、「高貴な」を意味します。' },
+            { katakana: 'アドルフ', french: 'Adolphine', meaning: '' },
+            { katakana: 'アドリエンヌ', french: 'Adrienne', meaning: 'ラテン語のハドリアヌスに由来。「アドリア海沿岸の町出身」。' },
+            { katakana: 'アギャット、アガット', french: 'Agathe', meaning: 'ギリシャ語の「agathos（良い、善良な）」に由来します。' },
+            { katakana: 'アグラエ', french: 'Aglaé', meaning: 'ギリシャ語で「輝き、美」を意味します。' },
+            { katakana: 'アニエス', french: 'Agnès', meaning: 'ギリシャ語で「純粋な、聖なる」を意味します。' },
+            { katakana: 'アイーダ', french: 'Aïda', meaning: 'アラビア語で「訪れる者、帰る者」を意味します。' },
+            { katakana: 'エメ', french: 'Aimée', meaning: 'フランス語の動詞「aimer（愛する）」の過去分詞形で、「愛された」を意味します。' },
+            { katakana: 'アイノア', french: 'Ainhoa', meaning: '' },
+            { katakana: 'アラバストル', french: 'Alabastre', meaning: '' },
+            { katakana: 'アレーン', french: 'Alaine', meaning: '' },
+            { katakana: 'アルバ', french: 'Alba', meaning: 'ラテン語で「白い」を意味します。' },
+            { katakana: 'アルバニ', french: 'Albane', meaning: 'ラテン語で「白い」を意味するアルバヌスに由来。' },
+            { katakana: 'アルベルト', french: 'Alberte', meaning: '' },
+            { katakana: 'アルベルティーヌ', french: 'Albertine', meaning: '' },
+            { katakana: 'アルビヌ', french: 'Albine', meaning: '' },
+            { katakana: 'アルダ', french: 'Alda', meaning: 'ゲルマン語で「古い、豊かな」を意味します。' },
+            { katakana: 'アレット', french: 'Alette', meaning: '' },
+            { katakana: 'アレクサンドラ', french: 'Alexandra', meaning: 'アレクサンドロスの女性形。「人類の守護者」。' },
+            { katakana: 'アレクサンドリーヌ', french: 'Alexandrine', meaning: 'アレクサンドラの派生形です。' },
+            { katakana: 'アレクサン', french: 'Alexane', meaning: 'アレクサンドラの愛称の一つ。' },
+            { katakana: 'アレクシア', french: 'Alexia', meaning: 'アレクサンドラの短縮形です。' },
+            { katakana: 'アリス', french: 'Alice', meaning: 'ゲルマン語の「Adalheidis（高貴な身分）」に由来すると言われています。' },
+            { katakana: 'アリシア', french: 'Alicia', meaning: 'アリスのラテン語形です。' },
+            { katakana: 'アリエノール', french: 'Aliénor', meaning: 'ギリシャ語で「慈悲、哀れみ」を意味すると言われています。' },
+            { katakana: 'アリーヌ', french: 'Aline', meaning: 'アデールの短縮形、またはラテン語で「高貴な」の意味。' },
+            { katakana: 'アリックス', french: 'Alix', meaning: 'アリスの古いフランス語形です。' },
+            { katakana: 'アリソン', french: 'Alison', meaning: 'アリスの愛称の一つ。' },
+            { katakana: 'アリゼ', french: 'Alizé', meaning: 'フランス語で「貿易風」を意味します。' },
+            { katakana: 'アロイズ', french: 'Aloïse', meaning: '' },
+            { katakana: 'アルマ', french: 'Alma', meaning: 'ラテン語で「恵み深い、滋養豊かな」を意味します。' },
+            { katakana: 'アマブル', french: 'Amable', meaning: '' },
+            { katakana: 'アマリア', french: 'Amalia', meaning: '' },
+            { katakana: 'アモンディンヌ', french: 'Amandine', meaning: 'ラテン語の「amandus（愛されるべき）」から派生した名前です。' },
+            { katakana: 'アマランテ', french: 'Amarante', meaning: '' },
+            { katakana: 'アンブル', french: 'Ambre', meaning: '宝石の「琥珀」を意味します。アラビア語が語源です。' },
+            { katakana: 'アメリー', french: 'Amélie', meaning: 'ゲルマン語の「amal（仕事、労働）」に由来し、「働き者」を意味します。' },
+            { katakana: 'アミナ', french: 'Amina', meaning: '' },
+            { katakana: 'アナ＝マリア', french: 'Ana-Maria', meaning: '' },
+            { katakana: 'アナベル', french: 'Annabelle / Anabel', meaning: 'アンナ（恵み）とベル（美しい）を組み合わせた名前。' },
+            { katakana: 'アナエル', french: 'Anaëlle', meaning: 'アンナ（恵み）とヘブライ語の「エル（神）」の組み合わせ。' },
+            { katakana: 'アナイス', french: 'Anaïs', meaning: 'ヘブライ語の「ハンナ（恵み）」に由来するアンヌの、プロヴァンス語・カタルーニャ語形です。' },
+            { katakana: 'アナスタシア', french: 'Anastasia', meaning: 'ギリシャ語で「復活」を意味します。' },
+            { katakana: 'アンドレ', french: 'Andrée', meaning: 'アンドロスの女性形。「男らしい、勇敢な」。' },
+            { katakana: 'アンジェル', french: 'Angèle', meaning: 'ギリシャ語で「天使、メッセンジャー」を意味します。' },
+            { katakana: 'アンジェリーヌ', french: 'Angeline', meaning: 'アンジェルの愛称形。' },
+            { katakana: 'アンジェリク', french: 'Angélique', meaning: 'ギリシャ語で「天使のような」を意味します。' },
+            { katakana: 'アニッサ', french: 'Anissa', meaning: '' },
+            { katakana: 'アンナ', french: 'Anna / Hanna / Hannah', meaning: 'ヘブライ語の「ハンナ」に由来し、「恵み、優雅」を意味します。' },
+            { katakana: 'アンヌ', french: 'Anne', meaning: 'ヘブライ語の「ハンナ」に由来し、「恵み、優雅」を意味します。' },
+            { katakana: 'アンヌ＝マリー', french: 'Anne-Marie', meaning: '' },
+            { katakana: 'アネット', french: 'Annette', meaning: 'アンヌの愛称の一つ。' },
+            { katakana: 'アヌーク', french: 'Anouk', meaning: 'アンヌの愛称の一つ。' },
+            { katakana: 'アントワネット', french: 'Antoinette', meaning: 'アントニウスの女性形。ラテン語で「計り知れない価値のある」。' },
+            { katakana: 'アポリーヌ', french: 'Apolline', meaning: 'ギリシャ神話の太陽神「アポロン」に由来します。' },
+            { katakana: 'アラベル', french: 'Arabelle', meaning: '' },
+            { katakana: 'アルカディ', french: 'Arcadie', meaning: '' },
+            { katakana: 'アリアーヌ', french: 'Ariane / Arianne', meaning: 'ギリシャ語で「とても聖なる」を意味し、クレタ島の王女の名前としても知られています。' },
+            { katakana: 'アリエル', french: 'Arielle', meaning: 'ヘブライ語で「神のライオン」を意味します。' },
+            { katakana: 'アリシー', french: 'Aricie', meaning: '' },
+            { katakana: 'アルレット', french: 'Arlette', meaning: '' },
+            { katakana: 'アルマンディーヌ', french: 'Armandine', meaning: '' },
+            { katakana: 'アルメル', french: 'Armelle', meaning: '' },
+            { katakana: 'アストリ', french: 'Astrid', meaning: '古い北欧語で「神々しい美しさ」を意味します。' },
+            { katakana: 'アテナイス', french: 'Athénaïs', meaning: '' },
+            { katakana: 'オード', french: 'Aude', meaning: '' },
+            { katakana: 'オドレイ', french: 'Audrey', meaning: '古英語で「高貴な力」を意味します。' },
+            { katakana: 'オーギュスティーヌ', french: 'Augustine', meaning: 'ラテン語で「尊厳ある、偉大な」。' },
+            { katakana: 'オレリア', french: 'Aurélia', meaning: 'ラテン語で「黄金の」を意味します。' },
+            { katakana: 'オレリー', french: 'Aurélie', meaning: 'ラテン語で「黄金の」を意味します。' },
+            { katakana: 'オリアンヌ', french: 'Auriane / Oriane', meaning: '' },
+            { katakana: 'オロール', french: 'Aurore', meaning: 'ラテン語で「夜明け、曙」を意味し、ローマ神話の暁の女神の名前です。' },
+            { katakana: 'アヴァ', french: 'Ava', meaning: '' },
+            { katakana: 'アヴリル', french: 'Avril', meaning: 'フランス語で「4月」を意味します。' },
+            { katakana: 'アクセル', french: 'Axelle', meaning: '' },
+            { katakana: 'アゼルマ', french: 'Azelma', meaning: '' },
+            { katakana: 'アゼノール', french: 'Azénor', meaning: '' },
+            { katakana: 'バベット', french: 'Babette', meaning: 'エリザベートの愛称の一つ。' },
+            { katakana: 'バルバラ', french: 'Barbara', meaning: 'ギリシャ語で「異邦人」を意味します。' },
+            { katakana: 'バスティーヌ', french: 'Bastienne', meaning: '' },
+            { katakana: 'バティルド', french: 'Bathilde', meaning: '' },
+            { katakana: 'ベアトリス', french: 'Béatrice', meaning: 'ラテン語で「祝福された、幸福をもたらす」を意味します。' },
+            { katakana: 'ベネディクト', french: 'Bénédicte', meaning: 'ラテン語で「祝福された」を意味します。' },
+            { katakana: 'ブノワト', french: 'Benoîte', meaning: 'ベネディクトのフランス語形。' },
+            { katakana: 'ベランジェール', french: 'Bérengère', meaning: '' },
+            { katakana: 'ベレニス', french: 'Bérénice', meaning: 'ギリシャ語で「勝利をもたらす者」を意味します。' },
+            { katakana: 'ベルナデット', french: 'Bernadette', meaning: 'ゲルマン語で「熊のように勇敢な」を意味します。' },
+            { katakana: 'ベルティーユ', french: 'Bertille', meaning: '' },
+            { katakana: 'ベルト', french: 'Berthe', meaning: '' },
+            { katakana: 'ビアンカ', french: 'Bianca', meaning: '' },
+            { katakana: 'ビビアン', french: 'Bibiane', meaning: '' },
+            { katakana: 'ブランシュ', french: 'Blanche', meaning: 'ゲルマン語で「白い、輝く」を意味します。純粋さの象徴です。' },
+            { katakana: 'ブランディーヌ', french: 'Blandine', meaning: '' },
+            { katakana: 'ブリュエット', french: 'Bluette', meaning: '' },
+            { katakana: 'ブリジット', french: 'Brigitte', meaning: 'ケルト神話の女神に由来。「高い、高貴な」。' },
+            { katakana: 'ブリュヌ', french: 'Brune', meaning: '' },
+            { katakana: 'ブリュネイルド', french: 'Brunehilde', meaning: '' },
+            { katakana: 'カミーユ', french: 'Camille', meaning: 'ラテン語で「神に仕える者、侍者」を意味します。男女両方に使われます。' },
+            { katakana: 'キャンディス', french: 'Candice', meaning: '' },
+            { katakana: 'カプシーヌ', french: 'Capucine', meaning: '花の名前「キンレンカ」に由来します。' },
+            { katakana: 'カリーヌ', french: 'Carine', meaning: '' },
+            { katakana: 'カルラ', french: 'Carla', meaning: '' },
+            { katakana: 'カルメン', french: 'Carmen', meaning: '' },
+            { katakana: 'カロル', french: 'Carole', meaning: '' },
+            { katakana: 'カロリーヌ', french: 'Caroline', meaning: 'シャルル（Charles）の女性形で、「自由な人」を意味します。' },
+            { katakana: 'カサンドル', french: 'Cassandre', meaning: 'ギリシャ語で「人々を輝かせる者」を意味します。トロイアの王女の名前です。' },
+            { katakana: 'カッシオペア', french: 'Cassiopée', meaning: '' },
+            { katakana: 'カトリーヌ', french: 'Catherine', meaning: 'ギリシャ語で「純粋な」を意味する「katharos」に由来します。' },
+            { katakana: 'セシール、セシル', french: 'Cécile', meaning: 'ラテン語で「盲目の」を意味しますが、音楽の守護聖人の名前として知られます。' },
+            { katakana: 'セシリア', french: 'Cécilia', meaning: '' },
+            { katakana: 'セレスト', french: 'Céleste', meaning: 'ラテン語で「天の、天国のような」を意味します。' },
+            { katakana: 'セレスティーヌ', french: 'Célestine', meaning: '' },
+            { katakana: 'セリア', french: 'Célia', meaning: '' },
+            { katakana: 'セリーヌ', french: 'Céline', meaning: 'ラテン語の「caelum（天）」に由来すると言われています。' },
+            { katakana: 'セリーズ', french: 'Cérise', meaning: 'フランス語で「サクランボ」を意味します。' },
+            { katakana: 'シャンタル', french: 'Chantal', meaning: '' },
+            { katakana: 'シャルリーヌ', french: 'Charline', meaning: '' },
+            { katakana: 'シャルロット', french: 'Charlotte', meaning: 'シャルル（Charles）の女性形で、「自由な人」を意味します。' },
+            { katakana: 'キアラ', french: 'Chiara', meaning: '' },
+            { katakana: 'クロエ', french: 'Chloé / Cloé', meaning: 'ギリシャ語で「若草、緑の芽生え」を意味し、豊穣の女神デメテルの別名です。' },
+            { katakana: 'クリステル', french: 'Christelle', meaning: '' },
+            { katakana: 'クリスティアーヌ、クリスチアーヌ', french: 'Christiane', meaning: '' },
+            { katakana: 'クリスティーヌ、クリスチーヌ', french: 'Christine', meaning: 'キリストに由来。「キリスト教徒」。' },
+            { katakana: 'シベル', french: 'Cybelle', meaning: '' },
+            { katakana: 'シンティア', french: 'Cynthia', meaning: '' },
+            { katakana: 'シリアク', french: 'Cyriaque', meaning: '' },
+            { katakana: 'シリエル', french: 'Cyrielle', meaning: '' },
+            { katakana: 'クレール', french: 'Claire', meaning: 'ラテン語で「明るい、輝く、有名な」を意味します。' },
+            { katakana: 'クララ', french: 'Clara', meaning: 'クレールと同じく「明るい、輝く」の意味。' },
+            { katakana: 'クラリス', french: 'Clarisse', meaning: '' },
+            { katakana: 'クロード', french: 'Claude', meaning: 'ローマの氏族名クラウディウスに由来。男女両用。' },
+            { katakana: 'クローデット', french: 'Claudette', meaning: '' },
+            { katakana: 'クローディーヌ', french: 'Claudine', meaning: '' },
+            { katakana: 'クレマンス', french: 'Clémence', meaning: 'ラテン語で「寛大、慈悲深い」を意味します。' },
+            { katakana: 'クレマンティーヌ、クレマンチーヌ', french: 'Clémentine', meaning: '果物のクレメンタインと同じ名前で、「優しい、寛大な」を意味します。' },
+            { katakana: 'クレリー', french: 'Clélie', meaning: '' },
+            { katakana: 'クレオパトル', french: 'Cléopâtre', meaning: '' },
+            { katakana: 'クロティルド', french: 'Clotilde / Clothilde', meaning: '' },
+            { katakana: 'コレット', french: 'Colette', meaning: 'ニコル（Nicole）の愛称形で、「民衆の勝利」を意味します。' },
+            { katakana: 'コロンブ', french: 'Colombe', meaning: '' },
+            { katakana: 'コンスタンス', french: 'Constance', meaning: 'ラテン語で「不変、不動」を意味します。' },
+            { katakana: 'コラリー', french: 'Coralie', meaning: 'ラテン語の「coralium（珊瑚）」に由来します。' },
+            { katakana: 'コランティーヌ', french: 'Corentine', meaning: '' },
+            { katakana: 'コリンヌ', french: 'Corinne', meaning: '' },
+            { katakana: 'コゼット', french: 'Cosette', meaning: '' },
+            { katakana: 'キュネゴンド', french: 'Cunégonde', meaning: '' },
+            { katakana: 'ダリア', french: 'Dalia', meaning: '' },
+            { katakana: 'ダリラ', french: 'Dalila', meaning: '' },
+            { katakana: 'ダナエ', french: 'Danaé', meaning: '' },
+            { katakana: 'ダニエル', french: 'Danièle / Danielle', meaning: 'ダニエルの女性形。「神は私の審判」。' },
+            { katakana: 'ダフネ', french: 'Daphné / Daphnée', meaning: 'ギリシャ語で「月桂樹」を意味します。神話に登場するニンフの名前です。' },
+            { katakana: 'デボラ', french: 'Débora / Déborah', meaning: 'ヘブライ語で「ミツバチ」を意味します。' },
+            { katakana: 'デルフィーヌ', french: 'Delphine', meaning: 'ギリシャの古代都市「デルポイ」に由来し、「イルカ」も意味します。' },
+            { katakana: 'ドゥニーズ', french: 'Denise', meaning: 'ギリシャ神ディオニュソスに由来。' },
+            { katakana: 'デジレ', french: 'Désirée', meaning: 'ラテン語で「望まれた」を意味します。' },
+            { katakana: 'ディアヌ、ディアーヌ', french: 'Diane', meaning: 'ラテン語で「神聖な」を意味し、ローマ神話の月の女神の名前です。' },
+            { katakana: 'ディオドラ', french: 'Diodora', meaning: '' },
+            { katakana: 'ドミティル', french: 'Domitille', meaning: '' },
+            { katakana: 'ドミニク', french: 'Dominique', meaning: 'ラテン語で「主に属するもの」を意味します。男女両用。' },
+            { katakana: 'ドーナ', french: 'Dona', meaning: '' },
+            { katakana: 'ドナシエンヌ', french: 'Donatienne', meaning: '' },
+            { katakana: 'ドリアーヌ', french: 'Doriane', meaning: '' },
+            { katakana: 'ドリーヌ', french: 'Dorine', meaning: '' },
+            { katakana: 'ドリス', french: 'Doris', meaning: '' },
+            { katakana: 'ドロテ', french: 'Dorothée', meaning: 'ギリシャ語で「神の贈り物」を意味します。' },
+            { katakana: 'エディト、エディット', french: 'Édith', meaning: '古英語で「富、戦い」を意味します。' },
+            { katakana: 'エドメ', french: 'Edmée', meaning: '' },
+            { katakana: 'エドウィージュ', french: 'Edwige', meaning: 'ゲルマン語で「富」と「戦い」を意味する言葉から成り立っています。' },
+            { katakana: 'エグランティーヌ', french: 'Églantine', meaning: '' },
+            { katakana: 'エレア', french: 'Éléa', meaning: '' },
+            { katakana: 'エレオノール', french: 'Éléonore', meaning: 'ギリシャ語で「慈悲、哀れみ」を意味すると言われています。' },
+            { katakana: 'エリアーヌ', french: 'Éliane', meaning: '' },
+            { katakana: 'エリーヌ', french: 'Éline', meaning: '' },
+            { katakana: 'エリザベト', french: 'Élisabeth', meaning: 'ヘブライ語で「神は私の誓い」を意味します。' },
+            { katakana: 'エリーズ', french: 'Élise', meaning: 'エリザベートの短縮形で、「神は私の誓い」を意味します。' },
+            { katakana: 'エラ', french: 'Ella', meaning: '' },
+            { katakana: 'エロディ', french: 'Élodie', meaning: 'ギリシャ語で「異国の富」を意味します。' },
+            { katakana: 'エロイーズ', french: 'Éloïse / Héloïse', meaning: 'ゲルマン語で「健康」と「木」を意味する言葉に由来します。' },
+            { katakana: 'エルザ', french: 'Elsa', meaning: 'エリザベートの短縮形の一つ。' },
+            { katakana: 'エルヴィール', french: 'Elvire', meaning: '' },
+            { katakana: 'エメリーヌ', french: 'Émeline', meaning: '' },
+            { katakana: 'エミリー', french: 'Émilie', meaning: 'ラテン語の氏族名アエミリウスに由来。「競争者、努力家」。' },
+            { katakana: 'エミリエンヌ', french: 'Émilienne', meaning: '' },
+            { katakana: 'エマ', french: 'Emma', meaning: 'ゲルマン語で「全体の、普遍的な」を意味します。' },
+            { katakana: 'エマニュエル', french: 'Emmanuelle', meaning: 'ヘブライ語で「神は我々と共に」を意味します。' },
+            { katakana: 'エミー', french: 'Emmy', meaning: '' },
+            { katakana: 'エリーヌ', french: 'Erine', meaning: '' },
+            { katakana: 'エルメリーヌ', french: 'Ermeline', meaning: '' },
+            { katakana: 'エルネスティーヌ', french: 'Ernestine', meaning: '' },
+            { katakana: 'エスメ', french: 'Esmée', meaning: '' },
+            { katakana: 'エスペランス', french: 'Espérance', meaning: '' },
+            { katakana: 'エステル', french: 'Estelle', meaning: 'ラテン語で「星」を意味します。' },
+            { katakana: 'エステール', french: 'Esther', meaning: 'ペルシャ語で「星」を意味します。' },
+            { katakana: 'ウジェニー、ウージェニー', french: 'Eugénie', meaning: 'ギリシャ語で「良い生まれの、高貴な」を意味します。' },
+            { katakana: 'ウラリー', french: 'Eulalie', meaning: 'ギリシャ語で「良い話し方をする」を意味します。' },
+            { katakana: 'ユードクシー', french: 'Eudoxie', meaning: '' },
+            { katakana: 'エーヴ', french: 'Ève', meaning: 'ヘブライ語で「命を与える者、生命」を意味します。' },
+            { katakana: 'エヴァ', french: 'Eva', meaning: 'エーヴのラテン語形。' },
+            { katakana: 'エヴリーヌ', french: 'Éveline / Évelyne', meaning: '' },
+            { katakana: 'ファビエンヌ', french: 'Fabienne', meaning: '' },
+            { katakana: 'ファビオラ', french: 'Fabiola', meaning: '' },
+            { katakana: 'ファニー', french: 'Fanny', meaning: 'フランソワーズの愛称で、「自由な人」または「フランス人」を意味します。' },
+            { katakana: 'ファンティーヌ', french: 'Fantine', meaning: '' },
+            { katakana: 'フォスティーヌ', french: 'Faustine', meaning: 'ラテン語で「幸運な、吉兆な」を意味します。' },
+            { katakana: 'フェリシー', french: 'Félicie', meaning: '' },
+            { katakana: 'フェリシエンヌ', french: 'Félicienne', meaning: '' },
+            { katakana: 'フェリシテ', french: 'Félicité', meaning: 'ラテン語で「幸福、幸運」を意味します。' },
+            { katakana: 'フェルナンド', french: 'Fernande', meaning: '' },
+            { katakana: 'フィオナ', french: 'Fiona', meaning: '' },
+            { katakana: 'フラヴィ', french: 'Flavie', meaning: 'ラテン語で「金髪の」を意味します。' },
+            { katakana: 'フルール', french: 'Fleur', meaning: 'フランス語でそのまま「花」を意味します。' },
+            { katakana: 'フローラ', french: 'Flora', meaning: 'ラテン語で「花」。ローマ神話の花と春の女神。' },
+            { katakana: 'フロランス', french: 'Florence', meaning: 'ラテン語で「繁栄する、花開く」を意味します。' },
+            { katakana: 'フロリアーヌ', french: 'Floriane', meaning: '' },
+            { katakana: 'フロリーヌ', french: 'Florine', meaning: '' },
+            { katakana: 'フォンティーヌ', french: 'Fontaine', meaning: '' },
+            { katakana: 'フランス', french: 'France', meaning: '' },
+            { katakana: 'フランセット', french: 'Francette', meaning: '' },
+            { katakana: 'フランシーヌ', french: 'Francine', meaning: 'フランソワーズの愛称の一つ。' },
+            { katakana: 'フランソワーズ', french: 'Françoise', meaning: '「フランス人の女性」または「自由な」。' },
+            { katakana: 'フレデリーク', french: 'Frédérique', meaning: '' },
+            { katakana: 'ガブリエル、ギャブリエル', french: 'Gabrielle', meaning: 'ヘブライ語で「神は私の力」を意味する大天使ガブリエルの女性形です。' },
+            { katakana: 'ガエル、ギャエル', french: 'Gaëlle', meaning: 'ケルト語で「気前の良い、寛大な」を意味します。' },
+            { katakana: 'ガエタン', french: 'Gaëtane', meaning: '' },
+            { katakana: 'ガイア', french: 'Gaïa', meaning: '' },
+            { katakana: 'ガランス', french: 'Garance', meaning: '花の名前「茜（あかね）」に由来します。' },
+            { katakana: 'ジュヌヴィエーヴ', french: 'Geneviève', meaning: 'ケルト語で「白い波」またはゲルマン語で「部族の女性」を意味します。パリの守護聖人です。' },
+            { katakana: 'ジョルジェット', french: 'Georgette', meaning: '' },
+            { katakana: 'ジョルジーヌ', french: 'Georgine', meaning: '' },
+            { katakana: 'ジェラルディーヌ', french: 'Géraldine', meaning: '' },
+            { katakana: 'ジェルメーヌ', french: 'Germaine', meaning: '' },
+            { katakana: 'ジェルヴェーズ', french: 'Gervaise', meaning: '' },
+            { katakana: 'ジスレーヌ', french: 'Ghislaine', meaning: '' },
+            { katakana: 'ジルベルト', french: 'Gilberte', meaning: '' },
+            { katakana: 'ジネット', french: 'Ginette', meaning: '' },
+            { katakana: 'ジゼル', french: 'Gisèle / Giselle', meaning: 'ゲルマン語で「人質」または「誓い」を意味します。' },
+            { katakana: 'グラディス', french: 'Gladys', meaning: '' },
+            { katakana: 'ゴドレーヴ', french: 'Godelieve', meaning: '' },
+            { katakana: 'グレース', french: 'Grâce', meaning: 'ラテン語の「gratia」に由来。「神の恵み」。' },
+            { katakana: 'グラシエンヌ', french: 'Gracianne', meaning: '' },
+            { katakana: 'グウェナエル', french: 'Gwenaëlle', meaning: '' },
+            { katakana: 'グウェンドリーヌ', french: 'Gwendoline', meaning: '' },
+            { katakana: 'アナエル', french: 'Hanaé', meaning: '' },
+            { katakana: 'エレーヌ', french: 'Hélène', meaning: 'ギリシャ語で「輝く光、松明」を意味します。ギリシャ神話の美女ヘレネの名前です。' },
+            { katakana: 'エリエット', french: 'Héliette', meaning: '' },
+            { katakana: 'アンリエット', french: 'Henriette', meaning: '' },
+            { katakana: 'エルミーヌ', french: 'Hermine', meaning: '' },
+            { katakana: 'オノリーヌ', french: 'Honorine', meaning: '' },
+            { katakana: 'オルタンス', french: 'Hortense', meaning: 'ラテン語で「庭師」を意味します。' },
+            { katakana: 'ユゲット', french: 'Huguette', meaning: '' },
+            { katakana: 'イアサント', french: 'Hyacinthe', meaning: '' },
+            { katakana: 'イネス', french: 'Inès / Ines', meaning: 'アニェスのスペイン・ポルトガル語形で、「純粋な」を意味します。' },
+            { katakana: 'イレーヌ', french: 'Irène', meaning: 'ギリシャ語で「平和」を意味します。平和の女神の名前です。' },
+            { katakana: 'イザボー', french: 'Isabeau', meaning: '' },
+            { katakana: 'イザベル', french: 'Isabelle / Isabel', meaning: 'エリザベートのスペイン語形で、「神は私の誓い」を意味します。' },
+            { katakana: 'イゾール', french: 'Isaure', meaning: '' },
+            { katakana: 'イズー', french: 'Iseult', meaning: '' },
+            { katakana: 'ジャサント', french: 'Jacinthe', meaning: '' },
+            { katakana: 'ジャクリーヌ', french: 'Jacqueline', meaning: 'ジャックの女性形。「かかとを掴む者」に由来。' },
+            { katakana: 'ジャド', french: 'Jade', meaning: '宝石の「翡翠（ひすい）」を意味します。' },
+            { katakana: 'ジャニーヌ', french: 'Janine / Jeannine', meaning: '' },
+            { katakana: 'ジャスミーヌ', french: 'Jasmine', meaning: '' },
+            { katakana: 'ジャンヌ', french: 'Jeanne', meaning: 'ヨハネの女性形で、「神は慈悲深い」を意味します。ジャンヌ・ダルクで有名です。' },
+            { katakana: 'ジャネット', french: 'Jeannette', meaning: '' },
+            { katakana: 'ジョアンヌ', french: 'Joanne', meaning: '' },
+            { katakana: 'ジョスリーヌ', french: 'Joceline / Jocelyne / Josseline', meaning: '' },
+            { katakana: 'ジョエル', french: 'Joëlle', meaning: '' },
+            { katakana: 'ジョアンナ、ジョアナ', french: 'Johanna', meaning: '' },
+            { katakana: 'ジョゼ', french: 'Josée', meaning: '' },
+            { katakana: 'ジョゼフ', french: 'Josèphe', meaning: '' },
+            { katakana: 'ジョゼフィーヌ', french: 'Joséphine', meaning: 'ヨセフの女性形で、「神は加えるだろう」を意味します。ナポレオンの妻の名前です。' },
+            { katakana: 'ジョゼット', french: 'Josette', meaning: '' },
+            { katakana: 'ジョジアーヌ', french: 'Josiane', meaning: '' },
+            { katakana: 'ジュディット', french: 'Judith', meaning: 'ヘブライ語で「称賛される」を意味します。' },
+            { katakana: 'ジュリー', french: 'Julie', meaning: 'ローマのユリウス氏族に由来し、「若々しい」を意味します。' },
+            { katakana: 'ジュリエンヌ', french: 'Julienne', meaning: '' },
+            { katakana: 'ジュリエット', french: 'Juliette', meaning: 'ジュリーの愛称形です。シェイクスピアの悲劇で知られます。' },
+            { katakana: 'ジュスティーヌ、ジュスチーヌ', french: 'Justine', meaning: 'ラテン語で「正しい、公正な」を意味します。' },
+            { katakana: 'レティシア', french: 'Laëtitia / Laetitia', meaning: 'ラテン語で「喜び、幸福」を意味します。' },
+            { katakana: 'ララ', french: 'Lara', meaning: '' },
+            { katakana: 'ロラ', french: 'Laura', meaning: 'ラテン語で「月桂樹」を意味し、勝利と名誉の象徴です。' },
+            { katakana: 'ロール', french: 'Laure', meaning: '' },
+            { katakana: 'ロランス', french: 'Laurence', meaning: 'ローランの女性形。「月桂樹の冠をかぶった」。' },
+            { katakana: 'レア', french: 'Léa', meaning: 'ヘブライ語で「疲れた」またはアッカド語で「雌牛」を意味します。' },
+            { katakana: 'レリア', french: 'Lélia', meaning: '' },
+            { katakana: 'レナ', french: 'Léna', meaning: '' },
+            { katakana: 'レナエル', french: 'Lénaëlle', meaning: '' },
+            { katakana: 'レオニー', french: 'Léonie', meaning: 'ラテン語で「ライオン」を意味します。' },
+            { katakana: 'レオノル', french: 'Léonor', meaning: '' },
+            { katakana: 'レオノール', french: 'Léonore', meaning: '' },
+            { katakana: 'レオンティーヌ', french: 'Léontine', meaning: '' },
+            { katakana: 'リアーヌ', french: 'Liane', meaning: '' },
+            { katakana: 'リリアーヌ', french: 'Liliane', meaning: 'ラテン語で「ユリ」を意味します。' },
+            { katakana: 'リルー', french: 'Lilou', meaning: 'リリー（ユリ）やルイーズなど、複数の名前の愛称から生まれた比較的新しい名前です。' },
+            { katakana: 'リーズ', french: 'Lise', meaning: '' },
+            { katakana: 'リゼット', french: 'Lisette', meaning: '' },
+            { katakana: 'ルイーズ', french: 'Louise', meaning: 'ルイ（Louis）の女性形で、「名高き戦士」を意味します。' },
+            { katakana: 'ルイゾン', french: 'Louison', meaning: '' },
+            { katakana: 'リュシー', french: 'Lucie', meaning: 'ラテン語の「lux（光）」に由来します。' },
+            { katakana: 'リュシエンヌ', french: 'Lucienne', meaning: '' },
+            { katakana: 'ルシール', french: 'Lucille', meaning: 'リュシーの愛称形。' },
+            { katakana: 'リュクレース', french: 'Lucrèce', meaning: '' },
+            { katakana: 'リュディヴィーヌ', french: 'Ludivine', meaning: '' },
+            { katakana: 'リディアーヌ', french: 'Lydiane', meaning: '' },
+            { katakana: 'リディ', french: 'Lydie', meaning: '' },
+            { katakana: 'マドレーヌ', french: 'Madeleine', meaning: 'マグダラのマリアに由来し、「マグダラの村の女性」を意味します。' },
+            { katakana: 'マドロン', french: 'Madelon', meaning: '' },
+            { katakana: 'マガリ', french: 'Magali', meaning: '' },
+            { katakana: 'マガリー', french: 'Magalie', meaning: '' },
+            { katakana: 'マノン', french: 'Manon', meaning: 'マリー（Marie）の愛称から独立した名前です。' },
+            { katakana: 'マルスリーヌ', french: 'Marceline / Marcelline', meaning: '' },
+            { katakana: 'マルセル', french: 'Marcelle', meaning: '' },
+            { katakana: 'マルゴ', french: 'Margot', meaning: 'マルグリットの愛称で、「真珠」を意味します。' },
+            { katakana: 'マルゲリット', french: 'Marguerite', meaning: 'ギリシャ語で「真珠」を意味します。フランスではヒナギクの花も指します。' },
+            { katakana: 'マリアンヌ', french: 'Marianne', meaning: 'マリーとアンヌを組み合わせた名前で、フランス共和国を象徴する女性像の名前です。' },
+            { katakana: 'マリー', french: 'Marie', meaning: 'ヘブライ語の「ミリアム」に由来し、「苦い海」や「愛される者」など諸説あります。' },
+            { katakana: 'マリー＝アンジュ', french: 'Marie-Ange', meaning: '' },
+            { katakana: 'マリー＝フランス', french: 'Marie-France', meaning: '' },
+            { katakana: 'マリー＝テレーズ', french: 'Marie-Thérèse', meaning: '' },
+            { katakana: 'マリエル', french: 'Marielle', meaning: '' },
+            { katakana: 'マリエット', french: 'Mariette', meaning: '' },
+            { katakana: 'マリルー', french: 'Marilou', meaning: '' },
+            { katakana: 'マリリーズ', french: 'Marilyse / Marylise', meaning: '' },
+            { katakana: 'マリオン', french: 'Marion', meaning: 'マリーの愛称の一つです。' },
+            { katakana: 'マルジョレーヌ', french: 'Marjolaine', meaning: 'ハーブのマジョラムを意味します。' },
+            { katakana: 'マルジョリー', french: 'Marjorie', meaning: '' },
+            { katakana: 'マルレーヌ', french: 'Marlène', meaning: '' },
+            { katakana: 'マルト', french: 'Marthe', meaning: '' },
+            { katakana: 'マルティーヌ', french: 'Martine', meaning: 'ローマの軍神マルスに由来。' },
+            { katakana: 'マリレーヌ', french: 'Marylène', meaning: '' },
+            { katakana: 'マリーズ', french: 'Maryse', meaning: '' },
+            { katakana: 'マリヴォンヌ', french: 'Maryvonne', meaning: '' },
+            { katakana: 'マチルド', french: 'Mathilde', meaning: 'ゲルマン語で「力」と「戦い」を意味し、「戦いの猛者」といった意味合いです。' },
+            { katakana: 'メレーヌ', french: 'Mélaine', meaning: '' },
+            { katakana: 'メラニー', french: 'Mélanie', meaning: 'ギリシャ語で「黒い、暗い」を意味します。' },
+            { katakana: 'メリザンド', french: 'Mélisande', meaning: '' },
+            { katakana: 'メロディ', french: 'Mélodie', meaning: '' },
+            { katakana: 'ミシェル', french: 'Michèle / Michelle', meaning: 'ミカエルの女性形。「誰が神のようであろうか」。' },
+            { katakana: 'ミシュリーヌ', french: 'Micheline', meaning: '' },
+            { katakana: 'ミレーヌ', french: 'Milène / Mylène', meaning: '' },
+            { katakana: 'ミラベル', french: 'Mirabelle', meaning: '' },
+            { katakana: 'ミレイユ', french: 'Mireille', meaning: 'プロヴァンス語で「賞賛する」を意味する言葉に由来します。' },
+            { katakana: 'モニク', french: 'Monique', meaning: 'ギリシャ語で「ただ一人の、助言者」を意味します。' },
+            { katakana: 'モルガーヌ', french: 'Morgane', meaning: 'ブルトン語で「海生まれの」を意味します。アーサー王伝説の魔女の名前です。' },
+            { katakana: 'ミュリエル', french: 'Muriel', meaning: '' },
+            { katakana: 'ミリアン', french: 'Myriam', meaning: '' },
+            { katakana: 'ナデージュ', french: 'Nadège', meaning: '' },
+            { katakana: 'ナディア', french: 'Nadia', meaning: '' },
+            { katakana: 'ナディーヌ', french: 'Nadine', meaning: '' },
+            { katakana: 'ナタリー', french: 'Nathalie / Natalie', meaning: 'ラテン語の「natalis dies（誕生日、特にクリスマスの日）」に由来。「クリスマスに生まれた」。' },
+            { katakana: 'ネリー', french: 'Nelly', meaning: '' },
+            { katakana: 'ニコル', french: 'Nicole', meaning: 'ニコラの女性形。「民衆の勝利」。' },
+            { katakana: 'ニコレット', french: 'Nicolette', meaning: '' },
+            { katakana: 'ニナ', french: 'Nina', meaning: '' },
+            { katakana: 'ニネット', french: 'Ninette', meaning: '' },
+            { katakana: 'ニノン', french: 'Ninon', meaning: '' },
+            { katakana: 'ノエル', french: 'Noèle / Noëlle', meaning: 'フランス語で「クリスマス」を意味します。' },
+            { katakana: 'ノエラ', french: 'Noëlla', meaning: '' },
+            { katakana: 'ノエミ', french: 'Noémi / Noémie', meaning: 'ヘブライ語で「私の喜び、心地よさ」を意味します。' },
+            { katakana: 'オデット', french: 'Odette', meaning: '' },
+            { katakana: 'オディル', french: 'Odile', meaning: '' },
+            { katakana: 'オルガ', french: 'Olga', meaning: '' },
+            { katakana: 'オリーヴ', french: 'Olive', meaning: '' },
+            { katakana: 'オフェリー', french: 'Ophélie', meaning: '' },
+            { katakana: 'オリアンヌ', french: 'Orianne', meaning: '' },
+            { katakana: 'オティリー', french: 'Ottilie', meaning: '' },
+            { katakana: 'パメラ', french: 'Paméla', meaning: '' },
+            { katakana: 'パスカル', french: 'Pascale', meaning: 'ラテン語の「paschalis」に由来。「復活祭（Pâques）の」。' },
+            { katakana: 'ポーラ', french: 'Paula', meaning: '' },
+            { katakana: 'ポール', french: 'Paule', meaning: '' },
+            { katakana: 'ポレット', french: 'Paulette', meaning: '' },
+            { katakana: 'ポリーヌ', french: 'Pauline', meaning: 'ラテン語で「小さい、謙虚な」を意味します。' },
+            { katakana: 'ペラジー', french: 'Pélagie', meaning: '' },
+            { katakana: 'ペネロープ', french: 'Pénélope', meaning: '' },
+            { katakana: 'ペリーヌ', french: 'Perrine', meaning: '' },
+            { katakana: 'ペトロニーユ', french: 'Pétronille', meaning: '' },
+            { katakana: 'フェベ', french: 'Phébé', meaning: '' },
+            { katakana: 'フィリピーヌ', french: 'Philippine', meaning: '' },
+            { katakana: 'ピエレット', french: 'Pierrette', meaning: '' },
+            { katakana: 'キトリー', french: 'Quitterie', meaning: '' },
+            { katakana: 'ラシェル', french: 'Rachel', meaning: 'ヘブライ語で「雌羊」を意味します。' },
+            { katakana: 'レイモンド', french: 'Raymonde', meaning: '' },
+            { katakana: 'レベッカ', french: 'Rébecca', meaning: '' },
+            { katakana: 'レジーヌ', french: 'Régine', meaning: 'ラテン語で「女王」を意味します。' },
+            { katakana: 'レーヌ', french: 'Reine', meaning: 'フランス語で「女王」を意味します。' },
+            { katakana: 'ルネ', french: 'Renée', meaning: 'フランス語で「再生した、生まれ変わった」を意味します。' },
+            { katakana: 'ロメーヌ', french: 'Romaine', meaning: '' },
+            { katakana: 'ロマーヌ', french: 'Romane', meaning: '' },
+            { katakana: 'ロザリー', french: 'Rosalie', meaning: '' },
+            { katakana: 'ローズ', french: 'Rose', meaning: 'ラテン語で「バラ」を意味します。' },
+            { katakana: 'ロズリーヌ', french: 'Roseline / Roselyne', meaning: '' },
+            { katakana: 'ローズモンド', french: 'Rosemonde', meaning: '' },
+            { katakana: 'ロジーヌ', french: 'Rosine', meaning: '' },
+            { katakana: 'ロクサーヌ', french: 'Roxane / Roxanne', meaning: '' },
+            { katakana: 'サビーナ', french: 'Sabina', meaning: '' },
+            { katakana: 'サビーヌ', french: 'Sabine', meaning: '' },
+            { katakana: 'サロメ', french: 'Salomé', meaning: '' },
+            { katakana: 'サンドリーヌ', french: 'Sandrine', meaning: 'アレクサンドラの愛称。' },
+            { katakana: 'サラ', french: 'Sara / Sarah', meaning: 'ヘブライ語で「王女、お姫様」を意味します。' },
+            { katakana: 'セバスチアンヌ', french: 'Sébastienne', meaning: '' },
+            { katakana: 'セゴレーヌ', french: 'Ségolène', meaning: '' },
+            { katakana: 'セレーヌ', french: 'Sélène', meaning: '' },
+            { katakana: 'セラフィーヌ', french: 'Séraphine', meaning: '' },
+            { katakana: 'セヴリーヌ', french: 'Séverine', meaning: '' },
+            { katakana: 'シビーユ', french: 'Sibille', meaning: '' },
+            { katakana: 'シビル', french: 'Sibylle / Sybille', meaning: '' },
+            { katakana: 'シドニー', french: 'Sidonie', meaning: '' },
+            { katakana: 'シゴレーヌ', french: 'Sigolène', meaning: '' },
+            { katakana: 'シモーヌ', french: 'Simone', meaning: 'シメオンの女性形。「（神が）聞き入れられた」。' },
+            { katakana: 'シモンヌ', french: 'Simonne', meaning: '' },
+            { katakana: 'ソランジュ', french: 'Solange', meaning: '' },
+            { katakana: 'ソレーヌ', french: 'Solène', meaning: '' },
+            { katakana: 'ソレンヌ', french: 'Solenne', meaning: 'ラテン語で「厳粛な、公式の」を意味します。' },
+            { katakana: 'ソフィ', french: 'Sophie', meaning: 'ギリシャ語で「知恵」を意味します。' },
+            { katakana: 'ステファニー', french: 'Stéphanie', meaning: 'ステファノスの女性形。ギリシャ語で「王冠」。' },
+            { katakana: 'シュザンヌ', french: 'Suzanne', meaning: 'ヘブライ語で「ユリ」を意味します。' },
+            { katakana: 'シュゼット', french: 'Suzette', meaning: '' },
+            { katakana: 'シルヴェーヌ', french: 'Sylvaine', meaning: '' },
+            { katakana: 'シルヴィ', french: 'Sylvie', meaning: 'ラテン語の「silva（森）」に由来。「森の」。' },
+            { katakana: 'タチアナ', french: 'Tatiana', meaning: '' },
+            { katakana: 'タイス', french: 'Thaïs', meaning: '' },
+            { katakana: 'テレーズ', french: 'Thérèse', meaning: 'ギリシャ語で「収穫する人」を意味します。' },
+            { katakana: 'ティフェーヌ、ティフェヌ', french: 'Tiphaine', meaning: '' },
+            { katakana: 'ティファニー、ティファニ', french: 'Tiphanie', meaning: '' },
+            { katakana: 'ユルシュル', french: 'Ursule', meaning: 'ラテン語で「小さな雌熊」を意味します。' },
+            { katakana: 'ヴァランティーヌ', french: 'Valentine', meaning: 'ラテン語で「健康な、強い」を意味します。' },
+            { katakana: 'ヴァレリー', french: 'Valérie', meaning: 'ラテン語の「valere（強い、健康である）」に由来。' },
+            { katakana: 'ヴァネッサ', french: 'Vanessa', meaning: '' },
+            { katakana: 'ヴェロニク', french: 'Véronique', meaning: '「勝利をもたらす者」、または「真の姿」。' },
+            { katakana: 'ヴィクトワール', french: 'Victoire', meaning: 'フランス語で「勝利」を意味します。' },
+            { katakana: 'ヴィクトリーヌ', french: 'Victorine', meaning: '' },
+            { katakana: 'ヴィオレーヌ', french: 'Violaine', meaning: '' },
+            { katakana: 'ヴィオレット', french: 'Violette', meaning: '花の名前「スミレ」を意味します。' },
+            { katakana: 'ヴィルジニー', french: 'Virginie', meaning: 'ラテン語で「処女、純潔な」を意味します。' },
+            { katakana: 'ヴィヴィアンヌ', french: 'Viviane / Vivienne', meaning: 'ラテン語で「生命力にあふれた」を意味します。' },
+            { katakana: 'ヨランド', french: 'Yolande', meaning: '' },
+            { katakana: 'イヴェット', french: 'Yvette', meaning: '' },
+            { katakana: 'イヴォンヌ', french: 'Yvonne', meaning: 'ゲルマン語で「イチイの木」を意味します。' },
+            { katakana: 'ゼリー', french: 'Zélie', meaning: '' },
+            { katakana: 'ゼナイド', french: 'Zénaïde', meaning: '' },
+            { katakana: 'ゾエ', french: 'Zoé', meaning: 'ギリシャ語で「生命」を意味します。' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabGacha = document.getElementById('tab-gacha');
+            const tabDictionary = document.getElementById('tab-dictionary');
+            const pageGacha = document.getElementById('gacha-page');
+            const pageDictionary = document.getElementById('dictionary-page');
+            
+            setupTabs();
+            setupGacha();
+            buildDictionary();
+
+            function setupTabs() {
+                tabGacha.addEventListener('click', () => switchTab(tabGacha, pageGacha));
+                tabDictionary.addEventListener('click', () => switchTab(tabDictionary, pageDictionary));
+            }
+            
+            function switchTab(activeTab, activePage) {
+                [tabGacha, tabDictionary].forEach(tab => tab.classList.remove('active'));
+                [pageGacha, pageDictionary].forEach(page => page.classList.remove('active'));
+                activeTab.classList.add('active');
+                activePage.classList.add('active');
+            }
+
+            function setupGacha() {
+                const gachaButton = document.getElementById('gacha-button');
+                const initialMessage = document.getElementById('initial-message');
+                const katakanaNameEl = document.getElementById('katakana-name');
+                const frenchNameEl = document.getElementById('french-name');
+                const meaningEl = document.getElementById('meaning');
+
+                gachaButton.addEventListener('click', () => {
+                    if (initialMessage.style.display !== 'none') {
+                        initialMessage.style.display = 'none';
+                    }
+                    const randomIndex = Math.floor(Math.random() * names.length);
+                    const selectedName = names[randomIndex];
+                    katakanaNameEl.textContent = selectedName.katakana;
+                    frenchNameEl.textContent = selectedName.french;
+                    meaningEl.textContent = selectedName.meaning || '';
+                });
+            }
+
+            function buildDictionary() {
+                names.sort((a, b) => a.french.localeCompare(b.french, 'fr'));
+
+                const indexNav = document.getElementById('index-nav');
+                const nameList = document.getElementById('name-list');
+                let indexHTML = '';
+                let listHTML = '';
+                let currentLetter = '';
+                const letters = new Set();
+
+                names.forEach(name => {
+                    const firstLetter = name.french.charAt(0).toUpperCase();
+                    if (firstLetter !== currentLetter) {
+                        if (currentLetter !== '') {
+                            listHTML += `</div>`;
+                        }
+                        currentLetter = firstLetter;
+                        letters.add(currentLetter);
+                        listHTML += `<div class="name-section" id="section-${currentLetter}"><h2>${currentLetter}</h2>`;
+                    }
+                    
+                    listHTML += `
+                        <div class="name-entry">
+                            <p class="name-main">
+                                <span class="name-katakana">${name.katakana}</span>
+                                <span class="name-french">${name.french}</span>
+                            </p>
+                            ${name.meaning ? `<p class="name-meaning">${name.meaning}</p>` : ''}
+                        </div>
+                    `;
+                });
+                listHTML += `</div>`;
+                
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').forEach(letter => {
+                    if(letters.has(letter)){
+                        indexHTML += `<a href="#section-${letter}">${letter}</a>`;
+                    }
+                });
+                
+                indexNav.innerHTML = indexHTML;
+                nameList.innerHTML = listHTML;
+            }
+        });
+    </script>
+</body>
+</html>
